@@ -14,12 +14,62 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import cgi
+import urllib
 import webapp2
 
-class MainHandler(webapp2.RequestHandler):
-    def get(self):
-        self.response.write('NoWork is completed!')
+from google.appengine.ext import db
+from google.appengine.api import users
 
-app = webapp2.WSGIApplication([
-    ('/', MainHandler)
-], debug=True)
+class Group(db.Model):
+  #basic info of group
+  name = db.StringProperty()
+  subject = db.StringProperty()
+  description = db.StringProperty()
+  memberCount = db.IntegerProperty()
+  
+  # Group affiliation
+  members = db.ListProperty(db.Key)
+  
+  @property
+  def members(self):
+    return Member.gql("WHERE groups = :1", self.key())
+
+class Member(db.Model):
+    #id of user according to dhs.sg accountname
+    username = user.User()
+    
+    #basic info of member
+    fullName = db.StringProperty()
+    classId = db.StringProperty()
+    
+    # Group affiliation
+    groups = db.ListProperty(db.Key)
+    
+    @property
+    def groups(self):
+        return Group.gql("WHERE members = :1", self.key())
+    
+class MemberGroup(db.Model):
+    member = db.ReferenceProperty(Member,required=True,collection_name='groups')
+    group = db.ReferenceProperty(Group,required=True,collection_name='members')
+    ##to add someone to a group:
+    #mary = Contact.gql("name = 'Mary'").get()
+    #google = Company.gql("name = 'Google'").get()
+    #ContactCompany(contact=mary,
+    #               company=google,
+    #               title='Engineer').put()
+    
+
+class MainPage(webapp2.RequestHandler):
+  def get(self):
+    user = users.get_current_user()
+
+    if user:
+      self.response.headers['Content-Type'] = 'text/plain'
+      self.response.out.write('Hello, ' + user.nickname())
+    else:
+      self.redirect(users.create_login_url(self.request.uri))
+
+app = webapp2.WSGIApplication([('/', MainPage)],
+                              debug=True)
