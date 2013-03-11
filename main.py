@@ -17,59 +17,82 @@
 import cgi
 import urllib
 import webapp2
+import jinja2
+import os
 
 from google.appengine.ext import db
 from google.appengine.api import users
 
-class Group(db.Model):
-  #basic info of group
-  name = db.StringProperty()
-  subject = db.StringProperty()
-  description = db.StringProperty()
-  memberCount = db.IntegerProperty()
-  
-  # Group affiliation
-  members = db.ListProperty(db.Key)
-  
-  @property
-  def members(self):
-    return Member.gql("WHERE groups = :1", self.key())
+jinja_environment = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
-class Member(db.Model):
-    #id of user according to dhs.sg accountname
-    username = user.User()
-    
-    #basic info of member
-    fullName = db.StringProperty()
-    classId = db.StringProperty()
-    
-    # Group affiliation
-    groups = db.ListProperty(db.Key)
-    
-    @property
-    def groups(self):
-        return Group.gql("WHERE members = :1", self.key())
-    
-class MemberGroup(db.Model):
-    member = db.ReferenceProperty(Member,required=True,collection_name='groups')
-    group = db.ReferenceProperty(Group,required=True,collection_name='members')
-    ##to add someone to a group:
-    #mary = Contact.gql("name = 'Mary'").get()
-    #google = Company.gql("name = 'Google'").get()
-    #ContactCompany(contact=mary,
-    #               company=google,
-    #               title='Engineer').put()
+#class Group(db.Model):
+#  #basic info of group
+#  name = db.StringProperty()
+#  subject = db.StringProperty()
+#  description = db.StringProperty()
+#  memberCount = db.IntegerProperty()
+#  
+#  # Group affiliation
+#  parents = db.ListProperty(db.Key)
+#
+#class Member(db.Model):
+#    #id of user according to dhs.sg accountname
+#    username = db.StringProperty()
+#    
+#    #basic info of member
+#    fullName = db.StringProperty()
+#    classId = db.StringProperty()
+#    
+#    # Group affiliation
+#    parents = db.ListProperty(db.Key)
+#    
+#class MemberGroup(db.Model):
+#    #member = db.ReferenceProperty(Member,required=True,collection_name='groups')
+#    #group = db.ReferenceProperty(Group,required=True,collection_name='members')
+#    
+#    class ContactCompany(db.Model):
+#        member = db.ReferenceProperty(Member,
+#                                       required=True,
+#                                       collection_name='groups')
+#        group = db.ReferenceProperty(Group,
+#                                       required=True,
+#                                       collection_name='members')
+#        title = db.StringProperty()
+#    
+#    ##to add someone to a group:
+#    #mary = Contact.gql("name = 'Mary'").get()
+#    #google = Company.gql("name = 'Google'").get()
+#    #ContactCompany(contact=mary,
+#    #               company=google,
+#    #               title='Engineer').put()
     
 
 class MainPage(webapp2.RequestHandler):
   def get(self):
-    user = users.get_current_user()
-
-    if user:
-      self.response.headers['Content-Type'] = 'text/plain'
-      self.response.out.write('Hello, ' + user.nickname())
+    
+    
+    
+    #get current user //currentUser.nickname() returns email
+    currentUser = users.get_current_user()
+    
+    if currentUser:
+      logio = users.create_logout_url(self.request.uri)
+      logio_linktext = 'Logout'
     else:
-      self.redirect(users.create_login_url(self.request.uri))
+      logio = users.create_login_url(self.request.uri)
+      logio_linktext = 'Login'
+
+    #these values are what gets subbed into the html through jinja2
+    template_values = {
+      'logio': logio,
+      'logio_linktext': logio_linktext,
+
+    }
+    
+    #locate and render the template
+    template = jinja_environment.get_template('index.html')
+    self.response.out.write(template.render(template_values))
 
 app = webapp2.WSGIApplication([('/', MainPage)],
                               debug=True)

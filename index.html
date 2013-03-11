@@ -1,0 +1,26 @@
+<html>
+  <body>
+    <!--insert jinja2 commands here-->
+    <!--{% for greeting in greetings %}
+      {% if greeting.author %}
+        <b>{{ greeting.author.nickname() }}</b> wrote:
+      {% else %}
+        An anonymous person wrote:
+      {% endif %}
+      <blockquote>{{ greeting.content|escape }}</blockquote>
+    {% endfor %}-->
+    
+    <h1>NoWork is currently under backend renovation. Sorry for the inconvenience. Stay tuned!</h1>
+    
+    <form action="/sign" method="post">
+      <!--<input type="hidden" value="{{guestbook_name}}" name="guestbook_name">-->
+      <div><textarea name="content" rows="3" cols="60"></textarea></div>
+      <!--<div><input type="submit" value="Sign Guestbook"></div>-->
+    </form>
+    <!--<form>Guestbook name: <input value="{{guestbook_name}}" name="guestbook_name">-->
+    <!--<input type="submit" value="switch"></form>-->
+
+    <a href="{{ logio}}">{{ logio_linktext }}</a>
+
+  </body>
+</html>
