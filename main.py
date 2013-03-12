@@ -26,46 +26,42 @@ from google.appengine.api import users
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
-#class Group(db.Model):
-#  #basic info of group
-#  name = db.StringProperty()
-#  subject = db.StringProperty()
-#  description = db.StringProperty()
-#  memberCount = db.IntegerProperty()
-#  
-#  # Group affiliation
-#  parents = db.ListProperty(db.Key)
-#
-#class Member(db.Model):
-#    #id of user according to dhs.sg accountname
-#    username = db.StringProperty()
-#    
-#    #basic info of member
-#    fullName = db.StringProperty()
-#    classId = db.StringProperty()
-#    
-#    # Group affiliation
-#    parents = db.ListProperty(db.Key)
-#    
-#class MemberGroup(db.Model):
-#    #member = db.ReferenceProperty(Member,required=True,collection_name='groups')
-#    #group = db.ReferenceProperty(Group,required=True,collection_name='members')
-#    
-#    class ContactCompany(db.Model):
-#        member = db.ReferenceProperty(Member,
-#                                       required=True,
-#                                       collection_name='groups')
-#        group = db.ReferenceProperty(Group,
-#                                       required=True,
-#                                       collection_name='members')
-#        title = db.StringProperty()
-#    
-#    ##to add someone to a group:
-#    #mary = Contact.gql("name = 'Mary'").get()
-#    #google = Company.gql("name = 'Google'").get()
-#    #ContactCompany(contact=mary,
-#    #               company=google,
-#    #               title='Engineer').put()
+class Group(db.Model):
+  #basic info of group
+  name = db.StringProperty()
+  subject = db.StringProperty()
+  description = db.StringProperty()
+  memberCount = db.IntegerProperty(default=0)
+  
+  # Group affiliation
+  parents = db.ListProperty(db.Key)
+
+class Member(db.Model):
+    #id of user according to dhs.sg accountname
+    username = db.StringProperty()
+    
+    #basic info of member
+    fullName = db.StringProperty()
+    classId = db.StringProperty()
+    
+    # Group affiliation
+    parents = db.ListProperty(db.Key)
+    
+class MemberGroup(db.Model):
+    member = db.ReferenceProperty(Member,
+                                   required=True,
+                                   collection_name='groups')
+    group = db.ReferenceProperty(Group,
+                                   required=True,
+                                   collection_name='members')
+    title = db.StringProperty()
+    
+    ##to add someone to a group:
+    #mary = Contact.gql("name = 'Mary'").get()
+    #google = Company.gql("name = 'Google'").get()
+    #ContactCompany(contact=mary,
+    #               company=google,
+    #               title='Engineer').put()
     
 
 class MainPage(webapp2.RequestHandler):
@@ -80,6 +76,7 @@ class MainPage(webapp2.RequestHandler):
       logio = users.create_logout_url(self.request.uri)
       logio_linktext = 'Logout'
     else:
+      self.redirect(users.create_login_url(self.request.uri))
       logio = users.create_login_url(self.request.uri)
       logio_linktext = 'Login'
 
