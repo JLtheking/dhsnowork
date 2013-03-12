@@ -84,7 +84,7 @@ class MainPage(webapp2.RequestHandler):
     template_values = {
       'logio': logio,
       'logio_linktext': logio_linktext,
-
+      'currentUserNickname': currentUser.nickname()
     }
     
     #locate and render the template
