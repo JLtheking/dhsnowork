@@ -93,6 +93,9 @@ class MainPage(webapp2.RequestHandler):
     #locate and render the template
     template = jinja_environment.get_template('index.html')
     self.response.out.write(template.render(template_values))
+    
+  def post(self):
+    pass
 
 app = webapp2.WSGIApplication([('/', MainPage)],
                               debug=True)

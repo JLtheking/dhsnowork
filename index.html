@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.css" />
     <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
     <script src="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.js"></script>
+    <script src="/stylesheets/main.js"></script>
   </head>
   
   <body>
@@ -23,8 +24,8 @@
         <a href="#" data-theme="b">Edit</a>
         <div data-role="navbar">
           <ul>
-            <li><a href="#home" class="ui-body-c ui-btn-active ui-state-persist">Notifications</a></li>
-            <li><a href="#homework" class="ui-body-c">Homework</a></li>
+            <li><a href="#" class="ui-body-c ui-btn-active ui-state-persist">Notifications</a></li>
+            <li><a href="#homework" class="ui-body-c" data-transition="none">Homework</a></li>
           </ul>
         </div><!-- /navbar -->
       </div>
@@ -50,9 +51,9 @@
       <div data-role="footer" data-position="fixed">  
         <div data-role="navbar" data-iconpos="top">
           <ul>
-            <li><a href="#home" class="ui-body-a ui-btn-active ui-state-persist" data-icon="home">Home</a></li>
-            <li><a href="#groups" class="ui-body-a" data-icon="grid">Groups</a></li>
-            <li><a href="#about" class="ui-body-a" data-icon="info">About</a></li>
+            <li><a href="#" class="ui-body-a ui-btn-active ui-state-persist" data-icon="home">Home</a></li>
+            <li><a href="#groups" class="ui-body-a" data-icon="grid" data-transition="none">Groups</a></li>
+            <li><a href="#about" class="ui-body-a" data-icon="info" data-transition="none">About</a></li>
           </ul>
         </div><!-- /navbar -->
       </div><!-- /footer -->
@@ -67,8 +68,8 @@
         <a href="#" data-theme="b">Edit</a>
         <div data-role="navbar">
           <ul>
-            <li><a href="#home" class="ui-body-c">Notifications</a></li>
-            <li><a href="#homework" class="ui-body-c ui-btn-active ui-state-persist">Homework</a></li>
+            <li><a href="#home" class="ui-body-c" data-transition="none">Notifications</a></li>
+            <li><a href="#" class="ui-body-c ui-btn-active ui-state-persist">Homework</a></li>
           </ul>
         </div><!-- /navbar -->
       </div>
@@ -95,9 +96,9 @@
       <div data-role="footer" data-position="fixed">  
         <div data-role="navbar" data-iconpos="top">
           <ul>
-            <li><a href="#home" class="ui-body-a ui-btn-active ui-state-persist" data-icon="home">Home</a></li>
-            <li><a href="#groups" class="ui-body-a" data-icon="grid">Groups</a></li>
-            <li><a href="#about" class="ui-body-a" data-icon="info">About</a></li>
+            <li><a href="#" class="ui-body-a ui-btn-active ui-state-persist" data-icon="home">Home</a></li>
+            <li><a href="#groups" class="ui-body-a" data-icon="grid" data-transition="none">Groups</a></li>
+            <li><a href="#about" class="ui-body-a" data-icon="info" data-transition="none">About</a></li>
           </ul>
         </div><!-- /navbar -->
       </div><!-- /footer -->
@@ -121,9 +122,9 @@
       <div data-role="footer" data-position="fixed">   
         <div data-role="navbar" data-iconpos="top" data-position="fixed">
           <ul>
-            <li><a href="#home" class="ui-body-a" data-icon="home">Home</a></li>
-            <li><a href="#groups" class="ui-body-a ui-btn-active ui-state-persist" data-icon="grid">Groups</a></li>
-            <li><a href="#about" class="ui-body-a" data-icon="info">About</a></li>
+            <li><a href="#home" class="ui-body-a" data-icon="home" data-transition="none">Home</a></li>
+            <li><a href="#" class="ui-body-a ui-btn-active ui-state-persist" data-icon="grid">Groups</a></li>
+            <li><a href="#about" class="ui-body-a" data-icon="info" data-transition="none">About</a></li>
           </ul>
         </div><!-- /navbar -->
       </div><!-- /footer -->
@@ -132,7 +133,7 @@
     
     
     <!-- ABOUT -->
-    <div data-role="page" data-theme="e" id="about">  
+    <div data-role="page" data-theme="c" id="about">  
       
       <div data-role="header" data-theme="b" data-position="fixed">
         <h1>DHS NoWork!</h1>
@@ -148,7 +149,29 @@
         <p>
           Additional features are still constantly in development, so do please send your feedback and opinions on how good the app works! Thank You!
         </p>
-        <input data-theme="e" type="submit" value="Submit Feedback"/>
+        
+        <!--submit feedback form-->
+        
+        <form action="/submitFeedback" method="post" data-transition="pop">
+          <ul data-role="listview" data-inset="true" data-theme="e">
+            <li data-role="fieldcontain">
+              <label for="textarea">Please give me your feedback!</label>
+              <textarea cols="40" rows="8" name="textarea" id="textarea" placeholder="This app is awesome! :D"></textarea>
+            </li>
+            <li data-role="fieldcontain">
+              <label for="feedbackslider">Rate my application!</label>
+              <input type="range" name="slider" id="feedbackslider" value="5" min="1" max="10" data-highlight="true">
+            </li>
+            <li class="ui-body ui-body-b">
+              <fieldset class="ui-grid-a">
+                <div class="ui-block-a"><button type="submit" data-theme="c">Cancel</button></div>
+                <div class="ui-block-b"><button type="submit" data-theme="b">Submit</button></div>
+              </fieldset>
+            </li>
+          </ul>
+        </form>
+        
+        <p>&nbsp;</p>
         
         <a href="{{ logio }}" data-role="button" data-theme="c">Sign Out</a>
         
@@ -160,9 +183,9 @@
       <div data-role="footer" data-position="fixed">   
         <div data-role="navbar" data-iconpos="top">
           <ul>
-            <li><a href="#home" class="ui-body-a" data-icon="home">Home</a></li>
-            <li><a href="#groups" class="ui-body-a" data-icon="grid">Groups</a></li>
-            <li><a href="#about" class="ui-body-a ui-btn-active ui-state-persist" data-icon="info">About</a></li>
+            <li><a href="#home" class="ui-body-a" data-icon="home" data-transition="none">Home</a></li>
+            <li><a href="#groups" class="ui-body-a" data-icon="grid" data-transition="none">Groups</a></li>
+            <li><a href="#" class="ui-body-a ui-btn-active ui-state-persist" data-icon="info">About</a></li>
           </ul>
         </div><!-- /navbar -->
       </div><!-- /footer -->
@@ -185,8 +208,6 @@
       <!--<input type="hidden" value="{{guestbook_name}}" name="guestbook_name">-->
       <!--<div><input type="submit" value="Sign Guestbook"></div>-->
     <!--</form>-->
-    <!--<form>Guestbook name: <input value="{{guestbook_name}}" name="guestbook_name">-->
-    <!--<input type="submit" value="switch"></form>-->
 
     <!--<a href="{{ logio}}">{{ logio_linktext }}</a>-->
 
