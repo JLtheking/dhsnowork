@@ -67,24 +67,27 @@ class MemberGroup(db.Model):
 class MainPage(webapp2.RequestHandler):
   def get(self):
     
-    
-    
-    #get current user //currentUser.nickname() returns email
+    #receive linkage to current user
     currentUser = users.get_current_user()
     
+    #default template values
+    logio = ""
+    logio_linktext = 'Logout'
+    currentUserNickname = "Lim Ah Seng"
+    
+    #user handlers
     if currentUser:
       logio = users.create_logout_url(self.request.uri)
-      logio_linktext = 'Logout'
+      currentUserNickname = currentUser.nickname()
     else:
       self.redirect(users.create_login_url(self.request.uri))
-      logio = users.create_login_url(self.request.uri)
-      logio_linktext = 'Login'
 
     #these values are what gets subbed into the html through jinja2
     template_values = {
       'logio': logio,
       'logio_linktext': logio_linktext,
-      'currentUserNickname': currentUser.nickname()
+      'currentUserNickname': currentUserNickname,
+      
     }
     
     #locate and render the template
