@@ -28,17 +28,41 @@ jinja_environment = jinja2.Environment(
     autoescape = True
 )
 
-### DATASTORE ENTITIES
-class Feedback(db.Model):
-    user = db.StringProperty(required = True)
-    text = db.TextProperty(required = True)
-    created = db.DateTimeProperty(auto_now_add = True)
+### PAGES
+class MainPage(webapp2.RequestHandler):
+  def render_page(self,currentUserNickname):
+        template_values = {
+            'currentUserNickname': currentUserNickname,
+        }
 
+        template = jinja_environment.get_template('index.html')
+        self.response.out.write(template.render(template_values))
+  
+  def get(self):
+    
+    #receive linkage to current user
+    currentUser = users.get_current_user()
+    
+    #default template values
+    currentUserNickname = "limahseng@dhs.sg"
+    
+    #user handlers
+    if not currentUser:
+      self.redirect(users.create_login_url(self.request.uri))
+    else:
+      currentUserNickname = currentUser.nickname()
+    
+    self.render_page(currentUserNickname)
+    
+  def post(self):
+    pass
+
+### DATASTORE ENTITIES
 class Group(db.Model):
   #basic info of group
   name = db.StringProperty()
   subject = db.StringProperty()
-  description = db.StringProperty()
+  description = db.TextProperty()
   memberCount = db.IntegerProperty(default=0)
   
   # Group affiliation
@@ -71,47 +95,28 @@ class MemberGroup(db.Model):
     #               company=google,
     #               title='Engineer').put()
     
-### PAGES
-class MainPage(webapp2.RequestHandler):
-  def render_page(self,currentUserNickname):
-        template_values = {
-            'currentUserNickname': currentUserNickname,
-        }
-
-        template = jinja_environment.get_template('index.html')
-        self.response.out.write(template.render(template_values))
-  
-  def get(self):
-    
-    #receive linkage to current user
-    currentUser = users.get_current_user()
-    
-    #default template values
-    currentUserNickname = "limahseng@dhs.sg"
-    
-    #user handlers
-    if not currentUser:
-      self.redirect(users.create_login_url(self.request.uri))
-    else:
-      currentUserNickname = currentUser.nickname()
-    
-    self.render_page(currentUserNickname)
-    
-  def post(self):
-    pass
+class Feedback(db.Model):
+    user = db.StringProperty(required = True)
+    text = db.TextProperty(required = True)
+    rating = db.IntegerProperty(required = True)
+    created = db.DateTimeProperty(auto_now_add = True)
 
 
-### HTML FORMS
+
+### HANDLERS
 class SubmitFeedbackHandler(webapp2.RequestHandler):
     def post(self):
         currentUser = users.get_current_user()
         
         user = currentUser.nickname()
         text = self.request.get("textarea")
-        feedback = Feedback(user = user, text = text)
+        rating = int(self.request.get("slider"))
+        
+        feedback = Feedback(user = user, text = text, rating = rating)
         feedback.put()
         
         self.redirect("/")
+        
 
 app = webapp2.WSGIApplication([('/', MainPage),
                                ('/submitFeedback', SubmitFeedbackHandler)],
