@@ -24,7 +24,15 @@ from google.appengine.ext import db
 from google.appengine.api import users
 
 jinja_environment = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
+    autoescape = True
+)
+
+### DATASTORE ENTITIES
+class Feedback(db.Model):
+    user = db.StringProperty(required = True)
+    text = db.TextProperty(required = True)
+    created = db.DateTimeProperty(auto_now_add = True)
 
 class Group(db.Model):
   #basic info of group
@@ -63,39 +71,48 @@ class MemberGroup(db.Model):
     #               company=google,
     #               title='Engineer').put()
     
-
+### PAGES
 class MainPage(webapp2.RequestHandler):
+  def render_page(self,currentUserNickname):
+        template_values = {
+            'currentUserNickname': currentUserNickname,
+        }
+
+        template = jinja_environment.get_template('index.html')
+        self.response.out.write(template.render(template_values))
+  
   def get(self):
     
     #receive linkage to current user
     currentUser = users.get_current_user()
     
     #default template values
-    logio = ""
-    logio_linktext = 'Logout'
-    currentUserNickname = "Lim Ah Seng"
+    currentUserNickname = "limahseng@dhs.sg"
     
     #user handlers
-    if currentUser:
-      logio = users.create_logout_url(self.request.uri)
-      currentUserNickname = currentUser.nickname()
-    else:
+    if not currentUser:
       self.redirect(users.create_login_url(self.request.uri))
-
-    #these values are what gets subbed into the html through jinja2
-    template_values = {
-      'logio': logio,
-      'logio_linktext': logio_linktext,
-      'currentUserNickname': currentUserNickname,
-      
-    }
+    else:
+      currentUserNickname = currentUser.nickname()
     
-    #locate and render the template
-    template = jinja_environment.get_template('index.html')
-    self.response.out.write(template.render(template_values))
+    self.render_page(currentUserNickname)
     
   def post(self):
     pass
 
-app = webapp2.WSGIApplication([('/', MainPage)],
+
+### HTML FORMS
+class SubmitFeedbackHandler(webapp2.RequestHandler):
+    def post(self):
+        currentUser = users.get_current_user()
+        
+        user = currentUser.nickname()
+        text = self.request.get("textarea")
+        feedback = Feedback(user = user, text = text)
+        feedback.put()
+        
+        self.redirect("/")
+
+app = webapp2.WSGIApplication([('/', MainPage),
+                               ('/submitFeedback', SubmitFeedbackHandler)],
                               debug=True)
