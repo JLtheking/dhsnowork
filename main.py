@@ -30,9 +30,10 @@ jinja_environment = jinja2.Environment(
 
 ### PAGES
 class MainPage(webapp2.RequestHandler):
-  def render_page(self,currentUserNickname):
+  def render_page(self,currentUserNickname, groups):
         template_values = {
             'currentUserNickname': currentUserNickname,
+            'groups': groups,
         }
 
         template = jinja_environment.get_template('index.html')
@@ -51,8 +52,9 @@ class MainPage(webapp2.RequestHandler):
       self.redirect(users.create_login_url(self.request.uri))
     else:
       currentUserNickname = currentUser.nickname()
+      groups = db.GqlQuery("SELECT * FROM Group")
     
-    self.render_page(currentUserNickname)
+    self.render_page(currentUserNickname, groups)
     
   def post(self):
     pass
@@ -60,10 +62,11 @@ class MainPage(webapp2.RequestHandler):
 ### DATASTORE ENTITIES
 class Group(db.Model):
   #basic info of group
-  name = db.StringProperty()
+  name = db.StringProperty(required = True)
   subject = db.StringProperty()
   description = db.TextProperty()
-  memberCount = db.IntegerProperty(default=0)
+  memberCount = db.IntegerProperty(default=1)
+  admin = db.StringProperty()
   
   # Group affiliation
   parents = db.ListProperty(db.Key)
@@ -117,7 +120,19 @@ class SubmitFeedbackHandler(webapp2.RequestHandler):
         
         self.redirect("/")
         
+class NewGroupHandler(webapp2.RequestHandler):
+    def post(self):
+        currentUser = users.get_current_user()
+        
+        admin = currentUser.nickname()
+        name = self.request.get("groupname")
+        subject = self.request.get("subject")
+        description = self.request.get("description")
+        
+        group = Group(name = name, subject = subject, description = description, admin = admin)
+        group.put()
 
 app = webapp2.WSGIApplication([('/', MainPage),
-                               ('/submitFeedback', SubmitFeedbackHandler)],
+                               ('/submitFeedback', SubmitFeedbackHandler),
+                               ('/newgroup', NewGroupHandler)],
                               debug=True)

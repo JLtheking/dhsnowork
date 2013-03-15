@@ -32,13 +32,7 @@
       
       <div data-role="content">  
         <p>Welcome, {{currentUserNickname}}! </p>
-        
-        
-        <!--<div data-role="controlgroup" data-type="horizontal">-->
-        <!--  <a href="#" data-role="button" data-theme="c">Yes</a>-->
-        <!--  <a href="#" data-role="button">No</a>-->
-        <!--  <a href="#" data-role="button">Maybe</a>-->
-        <!--</div>-->
+        <p>Here are your personal notifications:</p>
         
         <!--display list of notifications currently tied to user-->
         <ul data-role="listview" data-inset="true" data-filter="false">
@@ -46,8 +40,9 @@
             <li><a href="#">PCCG Lesson for 25 March to be held at Homerooms</a></li>
             <li><a href="#">2012 GCE 'A' Level results to be released on 26 March!</a></li>
         </ul>
-      </div>  
       
+        <p>And here are your group notifications:</p>
+      </div>
       <div data-role="footer" data-position="fixed">  
         <div data-role="navbar" data-iconpos="top">
           <ul>
@@ -76,21 +71,15 @@
       
       <div data-role="content">  
         <p>Welcome, {{currentUserNickname}}! </p>
-        <p>Here are the list of homework left for you to do!</p>
+        <p>Here are your personal homework:</p>
         
-        
-        <!--<div data-role="controlgroup" data-type="horizontal">-->
-        <!--  <a href="#" data-role="button" data-theme="c">Yes</a>-->
-        <!--  <a href="#" data-role="button">No</a>-->
-        <!--  <a href="#" data-role="button">Maybe</a>-->
-        <!--</div>-->
-        
-        <!--display list of notifications currently tied to user-->
         <ul data-role="listview" data-inset="true" data-filter="false">
             <li><a href="#">Friday 15 March: Save the World!</a></li>
             <li><a href="#">Satuday 16 March: Physics Tutorial</a></li>
             <li><a href="#">Wednesday 20 March: Submit PW PI :OOOO</a></li>
         </ul>
+        
+        <p>And here are your group homework:</p>
       </div>  
       
       <div data-role="footer" data-position="fixed">  
@@ -109,14 +98,40 @@
     <!-- GROUPS -->
     <div data-role="page" data-theme="d" id="groups" data-position="fixed">  
       
-      <div data-role="header" data-theme="d">
-        <a href="#" data-icon="plus" data-theme="a">New</a>
+      <div data-role="header" data-theme="d">       
+        <a href="#newgroup" data-rel="dialog" data-transition="slidedown" data-icon="plus" data-theme="a">New</a>
         <h1>DHS NoWork!</h1>
         <a href="#" data-theme="b">Edit</a>
       </div>
       
       <div data-role="content">  
+        <!--display list of notifications currently tied to user-->
+        <p>Placeholder groups:</p>
+        <ul data-role="listview" data-inset="true" data-filter="false">
+            <li><a href="#">5C23 Physics~ (&#9583;&#176;&#9633;&#176;&#65289;&#9583;&#65077; &#9531;&#9473;&#9531;</a></li>
+            <li><a href="#">5C22/23 Econs!</a></li>
+            <li><a href="#">5C23 Computer faces (&#3232;_&#3232;)</a></li>
+        </ul>
         
+        <p>Actual datastore groups:</p>
+        <ul data-role="listview" data-inset="true" data-filter="true">
+          {% for group in groups %}
+            <li><a href="#">{{group.name}}</a></li>
+          {% endfor %}
+          <!--{% for item in food %}-->
+          <!--  <li>{{ food.name }}</li>-->
+          <!--    <div id="reviews" data-role="page">-->
+          <!--  {% for review in reviews %}-->
+          <!--  {% if review.author %}-->
+          <!--    {{ review.author }} wrote:-->
+          <!--  {% else %}-->
+          <!--    An anonymous person wrote:-->
+          <!--  {% endif %}-->
+          <!--  <blockquote>{{ review.content|escape }}</blockquote>-->
+          <!--  {% endfor %}-->
+          <!--  </div>-->
+          <!--{% endfor %}-->
+        </ul>
       </div>  
       
       <div data-role="footer" data-position="fixed">   
@@ -129,6 +144,39 @@
         </div><!-- /navbar -->
       </div><!-- /footer -->
     </div><!-- page1 -->
+    
+    <!--NEW GROUP PAGE-->
+    <div data-role="page" data-theme="d" id="newgroup" data-position="fixed">  
+      
+      <div data-role="content">  
+        
+        <form action="/newgroup" method="post">
+          <ul data-role="listview" data-inset="true" data-theme="e">
+            <li data-role="fieldcontain">
+              <label for="groupname">Group Name:</label>
+              <input type="text" name="groupname" id="groupname" value="" placeholder="5C23 Nyan Cats! =^..^=">
+            </li>
+            <li data-role="fieldcontain">
+              <label for="subject">Subject / CCA:</label>
+              <input type="text" name="subject" id="subject" value="" placeholder="Cat Appreciation Society">
+            </li>
+            <li data-role="fieldcontain">
+              <label for="description">Description:</label>
+              <textarea name="description" id="description" placeholder="For cat lovers all around!"></textarea>
+            </li>
+            <li class="ui-body ui-body-b">
+              <fieldset class="ui-grid-a">
+                <div class="ui-block-a"><a href="#about" data-role="button" data-rel="back" data-theme="c">Cancel</a></div>
+                <div class="ui-block-b"><button type="submit" data-theme="b">Submit</button></div>
+              </fieldset>
+            </li>
+          </ul>
+        </form>
+        
+      </div><!-- content -->
+    </div><!-- page1 -->
+    
+    
     
     
     
@@ -190,18 +238,6 @@
       </div><!-- /footer -->
     </div><!-- page1 -->
     
-    
-    
-    
-    <!--insert jinja2 commands here-->
-    <!--{% for greeting in greetings %}
-      {% if greeting.author %}
-        <b>{{ greeting.author.nickname() }}</b> wrote:
-      {% else %}
-        An anonymous person wrote:
-      {% endif %}
-      <blockquote>{{ greeting.content|escape }}</blockquote>
-    {% endfor %}-->
     
     <!--<form action="/sign" method="post">-->
       <!--<input type="hidden" value="{{guestbook_name}}" name="guestbook_name">-->
