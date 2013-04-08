@@ -46,13 +46,25 @@ class MainPage(webapp2.RequestHandler):
     
     #default template values
     currentUserNickname = "limahseng@dhs.sg"
+    groups = ""
     
     #user handlers
     if not currentUser:
       self.redirect(users.create_login_url(self.request.uri))
+    
+    currentUserNickname = currentUser.nickname()
+    groups = db.GqlQuery("SELECT * FROM Group")
+    user = db.GqlQuery("SELECT * FROM Member WHERE name=currentUserNickname ")
+    if user:
+        pass
     else:
-      currentUserNickname = currentUser.nickname()
-      groups = db.GqlQuery("SELECT * FROM Group")
+        username = currentUser.nickname()
+        fullName = username
+        classId = username
+        
+        newUser = Member(username = username, fullName = fullName, classId = classId)
+        newUser.put()
+    
     
     self.render_page(currentUserNickname, groups)
     
@@ -131,6 +143,8 @@ class NewGroupHandler(webapp2.RequestHandler):
         
         group = Group(name = name, subject = subject, description = description, admin = admin)
         group.put()
+        
+        self.redirect("/")
 
 app = webapp2.WSGIApplication([('/', MainPage),
                                ('/submitFeedback', SubmitFeedbackHandler),

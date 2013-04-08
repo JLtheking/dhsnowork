@@ -106,14 +106,7 @@
       
       <div data-role="content">  
         <!--display list of notifications currently tied to user-->
-        <p>Placeholder groups:</p>
-        <ul data-role="listview" data-inset="true" data-filter="false">
-            <li><a href="#">5C23 Physics~ (&#9583;&#176;&#9633;&#176;&#65289;&#9583;&#65077; &#9531;&#9473;&#9531;</a></li>
-            <li><a href="#">5C22/23 Econs!</a></li>
-            <li><a href="#">5C23 Computer faces (&#3232;_&#3232;)</a></li>
-        </ul>
-        
-        <p>Actual datastore groups:</p>
+        <p>Groups you are currently participating in:</p>
         <ul data-role="listview" data-inset="true" data-filter="true">
           {% for group in groups %}
             <li><a href="#">{{group.name}}</a></li>
